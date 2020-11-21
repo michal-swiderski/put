@@ -13,22 +13,22 @@ input_file = open(argv[1], 'rb')
 content = pad(input_file.read(), 16)
 input_file.close()
 
-parts = [content[i:i + 16] for i in range(0, len(content), 16)]
+blocks = [content[i:i + 16] for i in range(0, len(content), 16)]
 
 ciphertext = bytes()
 block_ciphertext = None
-for part in parts:
+for block in blocks:
     if block_ciphertext is None:
-        block = (int.from_bytes(part, 'big') ^ int.from_bytes(IV, 'big')).to_bytes(len(part), 'big')
+        xored = (int.from_bytes(block, 'big') ^ int.from_bytes(IV, 'big')).to_bytes(len(block), 'big')
     else:
-        block = (int.from_bytes(part, 'big') ^ int.from_bytes(block_ciphertext, 'big')).to_bytes(len(part), 'big')
+        xored = (int.from_bytes(block, 'big') ^ int.from_bytes(block_ciphertext, 'big')).to_bytes(len(block), 'big')
     cipher = AES.new(KEY, AES.MODE_ECB)
-    block_ciphertext = cipher.encrypt(block)
+    block_ciphertext = cipher.encrypt(xored)
     ciphertext += block_ciphertext
 
 print(f'KEY={KEY.hex()}')
 print(f'IV={IV.hex()}')
-print(f'openssl enc -d -aes-128-cbc -in ./encrypted -out decrypted.jpg -iv {IV.hex()} -K {KEY.hex()} -nosalt')
+print(f'openssl enc -d -aes-128-cbc -iv {IV.hex()} -K {KEY.hex()} -nosalt -in {argv[2]} -out decrypted')
 output = open(argv[2], 'wb')
 output.write(ciphertext)
 output.close()
