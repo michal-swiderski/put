@@ -25,6 +25,7 @@ while block := input_file.read(16):
     block_ciphertext = cipher.encrypt(xored)
     output.write(block_ciphertext)
 
+input_file.close()
 output.close()
 print(f'KEY={KEY.hex()}')
 print(f'IV={IV.hex()}')
