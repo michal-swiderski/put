@@ -1,13 +1,20 @@
+#!/usr/bin/env python3
+from fractions import Fraction
+from math import fmod
 from sys import argv
-from random import randint
-from functools import reduce
-from math import floor
+
 import numpy as np
 
 PRIME = 1523
 
+
 def mod(a, n):
-    return a % n if a > 0 else a % n - n
+    frac = Fraction.from_float(a).limit_denominator(10000)
+    if frac.denominator == 1:
+        return fmod(a, n)
+    else:
+        return (pow(frac.denominator, n - 2, n) * frac.numerator) % n
+
 
 def pretty_polynomial(coeffs):
     pretty = []
@@ -16,9 +23,6 @@ def pretty_polynomial(coeffs):
         pretty.append(str(coeff) + (f'x^{degree - i}' if degree - i > 0 else ''))
     return ' + '.join(pretty)
 
-# num_shares = int(input("Number of shares: "))
-# t = int(input("t: "))
-# secret = int(input("Secret: "))
 
 raw = list(map(int, argv[1:]))
 shares = list(zip(raw[0::2], raw[1::2]))
@@ -31,13 +35,9 @@ for i in range(len(shares)):
             continue
         xi = shares[i][0]
         xj = shares[j][0]
-        l = np.polymul(l, [1/(xi - xj), xj / (xi - xj)])
+        l = np.polymul(l, [1 / (xi - xj), -xj / (xi - xj)])
 
     print(f'l_{i}(x) = {pretty_polynomial(l)}')
-    yi = shares[i][1]
-    yl_mod = mod(yi * l[-1], PRIME)
-    # print(f'{yi} * {l[-1]} mod {PRIME} = {yl_mod}')
-    secret += mod(yi * l[-1], PRIME)
-
+    secret += mod(shares[i][1] * l[-1], PRIME)
 
 print(f'Reconstructed secret: {secret}')

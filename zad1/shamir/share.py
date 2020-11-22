@@ -1,13 +1,15 @@
-from sys import argv
+#!/usr/bin/env python3
 from random import randint
-from functools import reduce
-from math import floor
+from sys import argv
+
 import numpy as np
 
 PRIME = 1523
 
+
 def mod(a, n):
     return a % n if a > 0 else a % n - n
+
 
 def pretty_polynomial(coeffs):
     pretty = []
@@ -16,9 +18,6 @@ def pretty_polynomial(coeffs):
         pretty.append(str(coeff) + (f'x^{degree - i}' if degree - i > 0 else ''))
     return ' + '.join(pretty)
 
-# num_shares = int(input("Number of shares: "))
-# t = int(input("t: "))
-# secret = int(input("Secret: "))
 
 num_shares = int(argv[1])
 t = int(argv[2])
