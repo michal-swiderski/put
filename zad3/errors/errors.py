@@ -14,6 +14,7 @@ NONCE = get_random_bytes(8)
 MODES = [AES.MODE_CBC, AES.MODE_ECB, AES.MODE_OFB, AES.MODE_CFB, AES.MODE_CTR]
 MODE_NAMES = ['CBC', 'ECB', 'OFB', 'CFB', 'CTR']
 
+
 def get_cipher(mode):
     if mode == AES.MODE_ECB:
         return AES.new(KEY, mode)
