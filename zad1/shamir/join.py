@@ -17,11 +17,15 @@ def mod(a, n):
 
 
 def pretty_polynomial(coeffs):
-    pretty = []
+    pretty = ''
     degree = len(coeffs) - 1
     for i, coeff in enumerate(coeffs):
-        pretty.append(str(coeff) + (f'x^{degree - i}' if degree - i > 0 else ''))
-    return ' + '.join(pretty)
+        if coeff > 0 and i > 0:
+            pretty += ' + '
+        if coeff < 0:
+            pretty += ' - '
+        pretty += str(round(abs(coeff), 2)) + (f'x^{degree - i}' if degree - i > 0 else '')
+    return pretty
 
 
 raw = list(map(int, argv[1:]))
