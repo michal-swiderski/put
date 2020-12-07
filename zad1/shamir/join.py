@@ -8,12 +8,18 @@ import numpy as np
 PRIME = 1523
 
 
+def find_inverted_elem(element, n):
+    for i in range(2, n):
+        if (i * element) % n == 1:
+            return i
+
+
 def mod(a, n):
     frac = Fraction.from_float(a).limit_denominator(10000)
     if frac.denominator == 1:
         return fmod(a, n)
     else:
-        return (pow(frac.denominator, n - 2, n) * frac.numerator) % n
+        return (frac.numerator * find_inverted_elem(frac.denominator, n)) % n
 
 
 def pretty_polynomial(coeffs):
